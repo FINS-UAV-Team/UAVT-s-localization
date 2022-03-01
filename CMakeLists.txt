@@ -17,8 +17,8 @@ add_executable(Acquisition Acquisition.cpp)
 target_link_libraries(Acquisition ${OpenCV_LIBS})
 target_link_libraries(Acquisition Boost::system boost_date_time boost_filesystem)
 
-add_executable(Callibration Fisheye.cpp)
+add_executable(Callibration Fisheye.cpp Undistort.hpp)
 target_link_libraries(Callibration ${OpenCV_LIBS})
 
-add_executable(Localization Localization.cpp)
+add_executable(Localization Localization.cpp Undistort.hpp)
 target_link_libraries(Localization ${OpenCV_LIBS})
