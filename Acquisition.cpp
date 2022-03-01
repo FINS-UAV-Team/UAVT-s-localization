@@ -1,7 +1,6 @@
 #include <iostream>
 
-#include <opencv2/core/core.hpp>
-#include <opencv2/highgui/highgui.hpp>
+#include <opencv2/opencv.hpp>
 using namespace cv;
 
 #include <boost/date_time/gregorian/gregorian.hpp>
