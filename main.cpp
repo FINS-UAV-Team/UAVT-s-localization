@@ -12,14 +12,16 @@ using namespace boost::posix_time;
 #include <boost/filesystem.hpp>
 namespace fs = boost::filesystem;
 
-constexpr auto savePath = "./";
+constexpr auto savePath = "./data/";
 
 int main() {
+
     /**
      * Create directory for image storage.
      */
     date today = day_clock::local_day();
     const String dirString = savePath + to_iso_string(today);
+
     fs::path dir(dirString);
     if(!fs::exists(dir)){
         create_directory(dir);
@@ -56,7 +58,6 @@ int main() {
             op = second_clock::local_time();
             timeString = to_iso_string(op);
             frameName.append("/").append(timeString).append(".jpg");
-
             imwrite(frameName, frame);
             std::cout << "Save frame in " << frameName << std::endl;
         }
