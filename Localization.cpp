@@ -24,14 +24,17 @@ int main(int argc, char** argv) {
      * Load image size
      */
     int inputWidth, inputHeight;
-    inputWidth = static_cast<int>(strtol(argv[1], nullptr, 10));
-    inputHeight = static_cast<int>(strtol(argv[2], nullptr, 10));
-    Size correctedSize(inputWidth, inputHeight);
+    static Size correctedSize(0, 0);
+    if(argc > 2) {
+        inputWidth = static_cast<int>(strtol(argv[1], nullptr, 10));
+        inputHeight = static_cast<int>(strtol(argv[2], nullptr, 10));
+        cout << "Resolution: " << inputWidth << " * " << inputHeight << endl;
+        correctedSize = Size(inputWidth, inputHeight);
+    }
 
     /**
      * Initialize undistort map
      */
-
     while (true) {
         Mat frame, corrected;
         namedWindow("Undistort");
