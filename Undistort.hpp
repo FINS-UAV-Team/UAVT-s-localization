@@ -3,6 +3,9 @@
 
 #include <opencv2/opencv.hpp>
 
+using namespace std;
+using namespace cv;
+
 constexpr int DEFAULT_IMAGE_WIDTH = 1280;
 constexpr int DEFAULT_IMAGE_HEIGHT = 720;
 
