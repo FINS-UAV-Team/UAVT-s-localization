@@ -57,9 +57,9 @@ int main() {
             imwrite(frameName, frame);
             std::cout << "Save frame in " << frameName << std::endl;
         }
-    }
 
-    cap.Refresh();
+        cap.Refresh();
+    }
     destroyAllWindows();
     return 0;
 }

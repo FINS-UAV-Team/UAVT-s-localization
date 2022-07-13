@@ -22,12 +22,12 @@ public:
 protected:
     MindVision();
 private:
-    static MindVision* mindVision;
+    static MindVision* mindvision;
     tSdkCameraDevInfo* cameraList = nullptr;
-    int cameraCnt;
+    int cameraCnt = 0;
 };
 
-MindVision* MindVision::mindVision = nullptr;
+MindVision* MindVision::mindvision = nullptr;
 
 MindVision::MindVision() {
     CameraSdkInit(1); //中文模式
@@ -36,28 +36,27 @@ MindVision::MindVision() {
 
 MindVision* MindVision::GetInstance() {
     if(mindvision == nullptr) {
-        mindVision = new MindVision;
+        mindvision = new MindVision;
     }
 
-    return mindVision;
+    return mindvision;
 }
 
 int MindVision::EnumerateDevices() {
     if(cameraList != nullptr) {
         delete [] cameraList;
-        cameraList == nullptr; //For safety, in case the following new operator failed.
+        cameraList = nullptr; //For safety, in case the following new operator failed.
     }
     cameraList = new tSdkCameraDevInfo [CAMERA_NUM];
     cameraCnt = CAMERA_NUM;
-    int status = CameraEnumerateDevice(&cameraList, &cameraCnt);
+    int status = CameraEnumerateDevice(cameraList, &cameraCnt);
     if(status != CAMERA_STATUS_SUCCESS) {
         return -1;
     }
 
-    int i = 0;
-    for(auto camera : cameraList) {
+    for(int i = 0; i < cameraCnt; i++) {
         std::cout << "相机序号：" << i << "" << std::endl;
-        std::cout << "产品名称：" << camera->acProductName << "" << std::endl;
+        std::cout << "产品名称：" << cameraList[i].acProductName << "" << std::endl;
         std::cout << std::endl;
         i++;
     }
@@ -66,7 +65,7 @@ int MindVision::EnumerateDevices() {
 }
 
 tSdkCameraDevInfo* MindVision::GetDevice(int index) {
-    return (cameraList + i);
+    return (cameraList + index);
 }
 
 #endif //__MINDVISION_HPP

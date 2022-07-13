@@ -16,8 +16,8 @@ frame and corrected are the input and output image with cv::Mat type.
  */
 class SUF401GM {
 public:
-    explicit SUF401GM(tSdkCameraDevInfo*);
     explicit SUF401GM(int index);
+    ~SUF401GM();
 
     cv::Mat* GetFrame();
     void Refresh();
@@ -30,8 +30,8 @@ private:
     BYTE* pbyBuffer;
 };
 
-SUF401GM::SUF401GM(tSdkCameraDevInfo* device) {
-    int status = CameraInit(device, -1, -1, &handle);
+SUF401GM::SUF401GM(int index) {
+    int status = CameraInit(MindVision::GetInstance()->GetDevice(index), -1, -1, &handle);
     if(status != CAMERA_STATUS_SUCCESS) {
         std::cerr << "SUF401GM camera failure!" << std::endl;
         return;
@@ -43,15 +43,15 @@ SUF401GM::SUF401GM(tSdkCameraDevInfo* device) {
     CameraSetExposureTime(handle, 8000);
     CameraSetAnalogGain(handle, 3);
     // Allocate memory for image buffer
-    g_pRgbBuffer = (unsigned char*)malloc(tCapability.sResolutionRange.iHeightMax*tCapability.sResolutionRange.iWidthMax*3);
+    g_pRgbBuffer = (unsigned char*)malloc(capability.sResolutionRange.iHeightMax * capability.sResolutionRange.iWidthMax);
     // Enable camera
     CameraPlay(handle);
     // Gray image
     CameraSetIspOutFormat(handle, CAMERA_MEDIA_TYPE_MONO8);
 }
 
-SUF401GM::SUF401GM(int index) {
-    SUF401GM(MindVision::GetInstance()->GetDevice(index));
+SUF401GM::~SUF401GM() {
+    CameraStop(handle);
 }
 
 cv::Mat* SUF401GM::GetFrame() {
