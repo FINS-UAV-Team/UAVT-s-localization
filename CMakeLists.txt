@@ -13,15 +13,20 @@ find_package(Boost REQUIRED COMPONENTS system)
 find_package(apriltag REQUIRED)
 find_package(Eigen3 REQUIRED)
 
+set(apriltag_INCLUDE_DIRS "/usr/local/apriltags/include/apriltag")
+set(apriltag_LIBS "/usr/local/apriltags/lib/libapriltag.so.3")
+
 include_directories(${OpenCV_INCLUDE_DIRS})
 include_directories(${apriltag_INCLUDE_DIRS})
 
 add_executable(Acquisition Acquisition.cpp)
 target_link_libraries(Acquisition ${OpenCV_LIBS})
 target_link_libraries(Acquisition Boost::system boost_date_time boost_filesystem)
+target_link_libraries(Acquisition "/lib/libMVSDK.so")
 
 add_executable(Callibration Fisheye.cpp)
 target_link_libraries(Callibration ${OpenCV_LIBS})
 
 add_executable(Localization Localization.cpp Undistort.hpp)
 target_link_libraries(Localization ${OpenCV_LIBS} ${apriltag_LIBS})
+message(aa ${apriltag_LIBS})
