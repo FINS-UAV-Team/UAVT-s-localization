@@ -29,7 +29,7 @@ int main(int argc, char** argv) {
      * Load image size
      */
     int inputWidth, inputHeight;
-    static Size correctedSize(1920, 0);
+    static Size correctedSize(720, 540);
     if(argc > 2) {
         inputWidth = static_cast<int>(strtol(argv[1], nullptr, 10));
         inputHeight = static_cast<int>(strtol(argv[2], nullptr, 10));

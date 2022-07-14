@@ -33,3 +33,9 @@
 
 /.idea
 /cmake-*
+/Camera
+/data
+
+Acquisition
+Callibration
+Localization
