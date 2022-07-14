@@ -2,7 +2,7 @@
 #define __SUF401GM_HPP
 
 #include <opencv2/opencv.hpp>
-#include "CameraApi.h" //相机SDK的API头文件
+#include "CameraApi.h" //SDK API
 #include "MindVision.hpp"
 
 /**
@@ -20,14 +20,14 @@ public:
     ~SUF401GM();
 
     cv::Mat* GetFrame();
-    void Refresh();
 
 private:
     int handle;
+    cv::Mat* frame = nullptr;
+
     tSdkCameraCapbility capability;
     unsigned char* g_pRgbBuffer;     //处理后数据缓存区
-    cv::Mat* frame = nullptr;
-    BYTE* pbyBuffer;
+    unsigned char* pbyBuffer;
 };
 
 SUF401GM::SUF401GM(int index) {
@@ -40,8 +40,7 @@ SUF401GM::SUF401GM(int index) {
     //获得相机的特性描述结构体。该结构体中包含了相机可设置的各种参数的范围信息。决定了相关函数的参数
     CameraGetCapability(handle, &capability);
     // Options
-    CameraSetExposureTime(handle, 8000);
-    CameraSetAnalogGain(handle, 3);
+
     // Allocate memory for image buffer
     g_pRgbBuffer = (unsigned char*)malloc(capability.sResolutionRange.iHeightMax * capability.sResolutionRange.iWidthMax);
     // Enable camera
@@ -70,13 +69,11 @@ cv::Mat* SUF401GM::GetFrame() {
                 sFrameInfo.uiMediaType == CV_8UC1,
                 g_pRgbBuffer
         );
+
+        CameraReleaseImageBuffer(handle, pbyBuffer);
     }
 
     return frame;
-}
-
-void SUF401GM::Refresh() {
-    CameraReleaseImageBuffer(handle, pbyBuffer);
 }
 
 #endif //__SUF401GM_HPP

@@ -14,7 +14,7 @@ namespace fs = boost::filesystem;
 constexpr auto savePath = "./data/";
 
 #include "SUF401GM.hpp"
-
+#include "RTSP.hpp"
 
 int main() {
 
@@ -34,6 +34,7 @@ int main() {
     std::cout << op << std::endl;
     String timeString;
 
+    //RTSPCamera cap("rtsp://admin:@192.168.136.75:554/");
     SUF401GM cap(0);
     Mat frame;
     namedWindow("img");
@@ -57,8 +58,6 @@ int main() {
             imwrite(frameName, frame);
             std::cout << "Save frame in " << frameName << std::endl;
         }
-
-        cap.Refresh();
     }
     destroyAllWindows();
     return 0;

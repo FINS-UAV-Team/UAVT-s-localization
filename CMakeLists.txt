@@ -29,4 +29,4 @@ target_link_libraries(Callibration ${OpenCV_LIBS})
 
 add_executable(Localization Localization.cpp Undistort.hpp)
 target_link_libraries(Localization ${OpenCV_LIBS} ${apriltag_LIBS})
-message(aa ${apriltag_LIBS})
+target_link_libraries(Localization "/lib/libMVSDK.so")

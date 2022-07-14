@@ -10,10 +10,10 @@ public:
 
 private:
     cv::VideoCapture* cap = nullptr;
-    cv::Mat* frame = nullptr;
+    cv::Mat* frame = new cv::Mat;
 };
 
-RTSPCamera::RTSPCamera(int url) {
+RTSPCamera::RTSPCamera(String url) {
     cap = new VideoCapture (url);
     if(!cap->isOpened()) {
         std::cerr << "Cap open failure!" << std::endl;
@@ -21,9 +21,10 @@ RTSPCamera::RTSPCamera(int url) {
 }
 
 RTSPCamera::~RTSPCamera() {
-    cap.release();
+    cap->release();
 }
 
-int *RTSPCamera::GetFrame() {
-    cap >> (*frame);
+cv::Mat* RTSPCamera::GetFrame() {
+    (*cap) >> (*frame);
+    return frame;
 }

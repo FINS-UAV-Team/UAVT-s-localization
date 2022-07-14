@@ -5,6 +5,9 @@ using namespace std;
 #include <opencv2/opencv.hpp>
 using namespace cv;
 
+#include "SUF401GM.hpp"
+#include "RTSP.hpp"
+
 #include "Undistort.hpp"
 #include "Localization.h"
 
@@ -17,20 +20,16 @@ extern "C" {
 int main(int argc, char** argv) {
 
     /**
-     * Network camera
+     * Camera
      */
-    String url = "rtsp://admin:@192.168.136.75:554/";
-    VideoCapture cap(url);
-    if (!cap.isOpened()) {
-        std::cerr << "Cap open failure!" << std::endl;
-        return 0;
-    }
+    RTSPCamera cap("rtsp://admin:@192.168.136.75:554/");
+    //SUF401GM cap(0);
 
     /**
      * Load image size
      */
     int inputWidth, inputHeight;
-    static Size correctedSize(0, 0);
+    static Size correctedSize(1920, 0);
     if(argc > 2) {
         inputWidth = static_cast<int>(strtol(argv[1], nullptr, 10));
         inputHeight = static_cast<int>(strtol(argv[2], nullptr, 10));
@@ -84,9 +83,10 @@ int main(int argc, char** argv) {
         * Initialize undistort map
         */
         Mat frame, corrected;
-        cap >> frame;
+        frame = *(cap.GetFrame());
         if (!frame.empty()) {
-            Undistort::GetInstance(correctedSize).ExecuteUndistort(frame, corrected);
+            corrected = frame;
+            //Undistort::GetInstance(correctedSize).ExecuteUndistort(frame, corrected);
             //imshow("Undistort", corrected);
         } else {
             std::cerr << "Image acquisition error!" << std::endl;
@@ -97,7 +97,8 @@ int main(int argc, char** argv) {
          * AprilTag detection
          */
         Mat gray;
-        cvtColor(corrected, gray, COLOR_BGR2GRAY);
+        gray = corrected;
+        //cvtColor(corrected, gray, COLOR_BGR2GRAY);
 
         // Make an image_u8_t header for the Mat data
         image_u8_t im = { .width = gray.cols,
@@ -141,14 +142,9 @@ int main(int argc, char** argv) {
 
         imshow("Tag Detections", corrected);
 
-
-
         auto input = waitKey(1);
         if ('q' == input) break;
     }
-
-    cap.release();
     destroyAllWindows();
-
     return 0;
 }
