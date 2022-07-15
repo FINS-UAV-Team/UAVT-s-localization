@@ -22,8 +22,8 @@ int main(int argc, char** argv) {
     /**
      * Camera
      */
-    RTSPCamera cap("rtsp://admin:@192.168.136.75:554/");
-    //SUF401GM cap(0);
+    //RTSPCamera cap("rtsp://admin:@192.168.136.75:554/");
+    SUF401GM cap(0);
 
     /**
      * Load image size

@@ -5,7 +5,7 @@ project(Acquisition)
 project(Callibration)
 project(Localization)
 
-set(EXECUTABLE_OUTPUT_PATH ${PROJECT_SOURCE_DIR})
+set(EXECUTABLE_OUTPUT_PATH ${PROJECT_SOURCE_DIR/Bin})
 message(Target will be generated under ${EXECUTABLE_OUTPUT_PATH})
 
 find_package(OpenCV REQUIRED)
@@ -18,15 +18,21 @@ set(apriltag_LIBS "/usr/local/apriltags/lib/libapriltag.so.3")
 
 include_directories(${OpenCV_INCLUDE_DIRS})
 include_directories(${apriltag_INCLUDE_DIRS})
+include_directories(Inc/Cameras)
+include_directories(Inc/Algorithms)
 
-add_executable(Acquisition Acquisition.cpp)
+aux_source_directory(Src/Acquisition/ ACQ)
+aux_source_directory(Src/Callibration CLB)
+aux_source_directory(Src/Localization LCL)
+
+add_executable(Acquisition ${ACQ})
 target_link_libraries(Acquisition ${OpenCV_LIBS})
 target_link_libraries(Acquisition Boost::system boost_date_time boost_filesystem)
 target_link_libraries(Acquisition "/lib/libMVSDK.so")
 
-add_executable(Callibration Fisheye.cpp)
+add_executable(Callibration ${CLB})
 target_link_libraries(Callibration ${OpenCV_LIBS})
 
-add_executable(Localization Localization.cpp Undistort.hpp)
+add_executable(Localization ${LCL})
 target_link_libraries(Localization ${OpenCV_LIBS} ${apriltag_LIBS})
 target_link_libraries(Localization "/lib/libMVSDK.so")

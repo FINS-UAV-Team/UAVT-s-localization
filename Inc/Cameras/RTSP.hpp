@@ -3,7 +3,7 @@
 
 class RTSPCamera {
 public:
-    explicit RTSPCamera(String url);
+    explicit RTSPCamera(const String& url);
     ~RTSPCamera();
 
     cv::Mat* GetFrame();
@@ -13,7 +13,7 @@ private:
     cv::Mat* frame = new cv::Mat;
 };
 
-RTSPCamera::RTSPCamera(String url) {
+RTSPCamera::RTSPCamera(const String& url) {
     cap = new VideoCapture (url);
     if(!cap->isOpened()) {
         std::cerr << "Cap open failure!" << std::endl;

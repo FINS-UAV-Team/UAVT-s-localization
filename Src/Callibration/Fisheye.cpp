@@ -36,7 +36,7 @@ void ShowUndistortImage(vector<string>& file_name, Mat& mapx, Mat& mapy, bool sh
 
 int main() {
     vector<string> file_name;
-    string folderPath = "./data/20220301";
+    string folderPath = "../data/20220301";
 
     GetFileNames(folderPath,file_name);
 
@@ -103,8 +103,8 @@ int main() {
     /**
      * File operation for parameter log
      */
-    ofstream intrinsicFile("intrinsics.txt");
-    ofstream disFile("dis_coeff.txt");
+    ofstream intrinsicFile("../data/intrinsics.txt");
+    ofstream disFile("../data/dis_coeff.txt");
     for(auto i = 0; i < 3; i++){
         for(auto j = 0; j < 3; j++){
             intrinsicFile << intrinsics(i, j) << "\t";

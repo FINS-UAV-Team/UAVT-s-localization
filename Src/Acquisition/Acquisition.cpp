@@ -11,12 +11,12 @@ using namespace boost::posix_time;
 #include <boost/filesystem.hpp>
 namespace fs = boost::filesystem;
 
-constexpr auto savePath = "./data/";
+constexpr auto savePath = "../data/";
 
 #include "SUF401GM.hpp"
 #include "RTSP.hpp"
 
-//#define VIDEO_MODE
+#define VIDEO_MODE
 constexpr int FPS = 20;
 
 int main() {

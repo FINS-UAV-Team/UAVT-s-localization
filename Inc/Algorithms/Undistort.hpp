@@ -72,8 +72,8 @@ Undistort &Undistort::GetInstance(const cv::Size &_correctedSize) {
 
 bool Undistort::LoadCalibrationParams(Matx33d& intrinsics, Vec4d& distortion_coeff){
 
-    ifstream intrinsicFile("intrinsics.txt");
-    ifstream disFile("dis_coeff.txt");
+    ifstream intrinsicFile("../data/intrinsics.txt");
+    ifstream disFile("../data/dis_coeff.txt");
 
     for(auto i = 0; i < 3; i++) {
         for (auto j = 0; j < 3; j++) {
