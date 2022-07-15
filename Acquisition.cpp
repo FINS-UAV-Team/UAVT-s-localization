@@ -16,8 +16,10 @@ constexpr auto savePath = "./data/";
 #include "SUF401GM.hpp"
 #include "RTSP.hpp"
 
-int main() {
+//#define VIDEO_MODE
+constexpr int FPS = 20;
 
+int main() {
     /**
      * Create directory for image storage.
      */
@@ -34,22 +36,57 @@ int main() {
     std::cout << op << std::endl;
     String timeString;
 
+    /**
+     * Choose a camera for image input
+     */
     //RTSPCamera cap("rtsp://admin:@192.168.136.75:554/");
     SUF401GM cap(0);
-    Mat frame;
-    namedWindow("img");
 
-    while(true){
+    /**
+     * Preparation for acquisition
+     */
+    Mat frame;
+#ifdef VIDEO_MODE
+    VideoWriter out;
+    op = second_clock::local_time();
+    timeString = to_iso_string(op);
+    std::cout << "Video saved path : " + dirString + "/" + timeString + ".avi" << std::endl;
+
+    frame = *(cap.GetFrame());
+    out.open(
+            dirString + "/" + timeString + ".avi",
+            VideoWriter::fourcc('D', 'I', 'V', 'X'),
+            FPS,
+            Size(frame.cols, frame.rows)
+    );
+    if(!out.isOpened()) {
+        std::cerr << "Create video failed!" << std::endl;
+    }
+#endif
+
+    while(true) {
         frame = *(cap.GetFrame());
-        if(!frame.empty()){
+        if(!frame.empty()) {
             imshow("img", frame);
+#ifdef VIDEO_MODE
+            if(1 == frame.channels()) cvtColor(frame, frame, COLOR_GRAY2BGR);
+#endif
         }
         else {
             std::cerr << "Image acquisition error!" << std::endl;
         }
 
         auto input = waitKey(1);
-        if('q' == input) break;
+        if('q' == input) {
+#ifdef VIDEO_MODE
+            out.release();
+#endif
+            break;
+        }
+
+#ifdef VIDEO_MODE
+        out.write(frame);
+#else
         if('s' == input){
             String frameName = dirString;
             op = second_clock::local_time();
@@ -58,7 +95,12 @@ int main() {
             imwrite(frameName, frame);
             std::cout << "Save frame in " << frameName << std::endl;
         }
-    }
+#endif
+    } //While loop end
+
+#ifdef VIDEO_MODE
+    out.release();
+#endif
     destroyAllWindows();
     return 0;
 }
