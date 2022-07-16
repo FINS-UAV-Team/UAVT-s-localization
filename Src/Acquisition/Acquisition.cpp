@@ -15,6 +15,7 @@ constexpr auto savePath = "../data/";
 
 #include "SUF401GM.hpp"
 #include "RTSP.hpp"
+#include "Video.hpp"
 
 #define VIDEO_MODE
 constexpr int FPS = 20;
@@ -41,6 +42,7 @@ int main() {
      */
     //RTSPCamera cap("rtsp://admin:@192.168.136.75:554/");
     SUF401GM cap(0);
+    //VideoAsCamera cap("../data/video/v1.avi", 20);
 
     /**
      * Preparation for acquisition

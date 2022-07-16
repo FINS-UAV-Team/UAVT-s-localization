@@ -7,6 +7,7 @@ using namespace cv;
 
 #include "SUF401GM.hpp"
 #include "RTSP.hpp"
+#include "Video.hpp"
 
 #include "Undistort.hpp"
 #include "Localization.h"
@@ -24,6 +25,7 @@ int main(int argc, char** argv) {
      */
     //RTSPCamera cap("rtsp://admin:@192.168.136.75:554/");
     SUF401GM cap(0);
+    //VideoAsCamera cap("../data/video/v1.avi", 20, true);
 
     /**
      * Load image size
