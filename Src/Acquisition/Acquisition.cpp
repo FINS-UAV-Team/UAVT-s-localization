@@ -16,9 +16,10 @@ constexpr auto savePath = "../data/";
 #include "SUF401GM.hpp"
 #include "RTSP.hpp"
 #include "Video.hpp"
+#include "FPS.hpp"
 
 #define VIDEO_MODE
-constexpr int FPS = 20;
+constexpr int VIDEO_FPS = 20;
 
 int main() {
     /**
@@ -58,13 +59,15 @@ int main() {
     out.open(
             dirString + "/" + timeString + ".avi",
             VideoWriter::fourcc('D', 'I', 'V', 'X'),
-            FPS,
+            VIDEO_FPS,
             Size(frame.cols, frame.rows)
     );
     if(!out.isOpened()) {
         std::cerr << "Create video failed!" << std::endl;
     }
 #endif
+
+    FPS fps;
 
     while(true) {
         frame = *(cap.GetFrame());
@@ -98,6 +101,8 @@ int main() {
             std::cout << "Save frame in " << frameName << std::endl;
         }
 #endif
+
+        std::cout << "FPS: " << fps.Tick() << std::endl;
     } //While loop end
 
 #ifdef VIDEO_MODE
