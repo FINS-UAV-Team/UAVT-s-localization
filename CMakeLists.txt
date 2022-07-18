@@ -5,7 +5,7 @@ project(Acquisition)
 project(Callibration)
 project(Localization)
 
-set(EXECUTABLE_OUTPUT_PATH ${PROJECT_SOURCE_DIR/Bin})
+set(EXECUTABLE_OUTPUT_PATH ${PROJECT_SOURCE_DIR}/Bin)
 message(Target will be generated under ${EXECUTABLE_OUTPUT_PATH})
 
 find_package(OpenCV REQUIRED)
