@@ -1,6 +1,8 @@
 #ifndef __SUF401GM_HPP
 #define __SUF401GM_HPP
 
+#include <thread>
+#include <mutex>
 #include <opencv2/opencv.hpp>
 #include "CameraApi.h" //SDK API
 #include "MindVision.hpp"
@@ -26,8 +28,15 @@ private:
     cv::Mat* frame = nullptr;
 
     tSdkCameraCapbility capability;
-    unsigned char* g_pRgbBuffer;     //处理后数据缓存区
-    unsigned char* pbyBuffer;
+    tSdkFrameHead sFrameInfo;
+    unsigned char* cameraData;
+    unsigned char* rawData;
+    unsigned char* matData;     //处理后数据缓存区
+
+    void Acquire();
+    void Process();
+
+    bool get = false, finish = false;
 };
 
 SUF401GM::SUF401GM(int index) {
@@ -42,40 +51,56 @@ SUF401GM::SUF401GM(int index) {
     // Options
 
     // Allocate memory for image buffer
-    g_pRgbBuffer = (unsigned char*)malloc(capability.sResolutionRange.iHeightMax * capability.sResolutionRange.iWidthMax);
+    rawData = (unsigned char*)malloc(capability.sResolutionRange.iHeightMax * capability.sResolutionRange.iWidthMax);
+    matData = (unsigned char*)malloc(capability.sResolutionRange.iHeightMax * capability.sResolutionRange.iWidthMax);
+
+    frame = new cv::Mat (
+            cv::Size(capability.sResolutionRange.iWidthMax, capability.sResolutionRange.iHeightMax),
+            CV_8UC1,
+            matData
+    );
+
     // Enable camera
     CameraPlay(handle);
     // Gray image
     CameraSetIspOutFormat(handle, CAMERA_MEDIA_TYPE_MONO8);
+
+    std::thread threadAcquired(&SUF401GM::Acquire, this);
+    std::thread threadProcess(&SUF401GM::Process, this);
+
+    threadAcquired.detach();
+    threadProcess.detach();
 }
 
 SUF401GM::~SUF401GM() {
     CameraStop(handle);
     CameraUnInit(handle);
-    free(g_pRgbBuffer);
+    free(matData);
 }
 
 cv::Mat* SUF401GM::GetFrame() {
-    tSdkFrameHead           sFrameInfo;
-
-    if(CameraGetImageBuffer(handle, &sFrameInfo, &pbyBuffer, 1000) == CAMERA_STATUS_SUCCESS) {
-        CameraImageProcess(handle, pbyBuffer, g_pRgbBuffer, &sFrameInfo);
-
-        if(frame != nullptr) {
-            delete frame;
-            frame = nullptr;
-        }
-
-        frame = new cv::Mat (
-                cv::Size(sFrameInfo.iWidth, sFrameInfo.iHeight),
-                sFrameInfo.uiMediaType == CV_8UC1,
-                g_pRgbBuffer
-        );
-
-        CameraReleaseImageBuffer(handle, pbyBuffer);
-    }
-
+    while(!finish);
+    finish = false;
     return frame;
+}
+
+void SUF401GM::Acquire() {
+    while(true) {
+        if (CameraGetImageBuffer(handle, &sFrameInfo, &cameraData, 1000) == CAMERA_STATUS_SUCCESS) {
+            memcpy(rawData, cameraData, sFrameInfo.iWidth * sFrameInfo.iHeight);
+            CameraReleaseImageBuffer(handle, cameraData);
+            get = true;
+        }
+    }
+}
+
+void SUF401GM::Process() {
+    while(true) {
+        while(!get);
+        CameraImageProcess(handle, rawData, matData, &sFrameInfo);
+        get = false;
+        finish = true;
+    }
 }
 
 #endif //__SUF401GM_HPP

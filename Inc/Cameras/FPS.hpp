@@ -9,6 +9,7 @@ public:
     double Tick();
 private:
     boost::posix_time::ptime lastTick;
+    double avg = 0;
 };
 
 FPS::FPS() {
@@ -21,7 +22,8 @@ double FPS::Tick() {
     auto timeDur = dur.total_microseconds();
     lastTick = now;
 
-    return (1000000 / static_cast<double>(timeDur));
+    avg = 0.9 * avg + 0.1 * (1000000 / static_cast<double>(timeDur));
+    return avg;
 }
 
 #endif //__FPS_HPP

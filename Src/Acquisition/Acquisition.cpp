@@ -18,7 +18,7 @@ constexpr auto savePath = "../data/";
 #include "Video.hpp"
 #include "FPS.hpp"
 
-#define VIDEO_MODE
+//#define VIDEO_MODE
 constexpr int VIDEO_FPS = 20;
 
 int main() {
