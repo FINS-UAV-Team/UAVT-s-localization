@@ -51,6 +51,8 @@ SUF401GM::SUF401GM(int index) {
 
 SUF401GM::~SUF401GM() {
     CameraStop(handle);
+    CameraUnInit(handle);
+    free(g_pRgbBuffer);
 }
 
 cv::Mat* SUF401GM::GetFrame() {
